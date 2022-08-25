@@ -1,4 +1,5 @@
 ﻿using Botw.Cryptohraphy;
+using Nintendo.Aamp;
 using Nintendo.Byml;
 using Nintendo.Sarc;
 using Nintendo.Yaz0;
@@ -17,7 +18,7 @@ namespace ArmorUpgradePhysicsPatcher
 {
     public partial class Dashboard : Form
     {
-        private readonly List<string> keys = new() { "hkcl", "bphysics", "bphyssb" };
+        private readonly List<string> keys = new() { "hkcl", "bphysics", "bphyssb", "bxml" };
 
         public Dashboard()
         {
@@ -124,7 +125,16 @@ namespace ArmorUpgradePhysicsPatcher
 
                     foreach (var key in keys) {
                         if (baseFiles.ContainsKey(key)) {
-                            if (key == "bphysics") {
+                            if (key == "bxml") {
+
+                                AampFile aamp = new(baseFiles[key].Value);
+                                var basePhysicsUser = aamp.RootNode.ParamObjects[0].ParamEntries[17];
+
+                                AampFile aampnew = new(files[key].Value);
+                                aampnew.RootNode.ParamObjects[0].ParamEntries[17] = basePhysicsUser;
+                                actorpack.Files[files[key].Key] = aampnew.ToBinary();
+                            }
+                            else if (key == "bphysics") {
                                 actorpack.Files[files[key].Key] = baseFiles[key].Value;
                             }
                             else {
