@@ -26,8 +26,9 @@ namespace ArmorUpgradePhysicsPatcher
 
         private void BtnBrowseSourceActor_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new();
-            openFileDialog.Filter = "Actor Pack (*.sbactorpack)|*.sbactorpack";
+            OpenFileDialog openFileDialog = new() {
+                Filter = "Actor Pack (*.sbactorpack)|*.sbactorpack"
+            };
             openFileDialog.ShowDialog();
 
             TbSourceActor.Text = openFileDialog.FileName;
@@ -84,7 +85,7 @@ namespace ArmorUpgradePhysicsPatcher
                 actorinfo = $"{bcml.GetUpdate()}\\Actor\\ActorInfo.product.sbyml";
             }
 
-            BymlFile byml = new(Yaz0.DecompressFast(actorinfo));
+            BymlFile byml = new(Yaz0.Decompress(actorinfo));
             BymlNode baseActor = new(new Dictionary<string, BymlNode>());
             Dictionary<string, BymlNode> hashedArray = new();
             var actorname = Path.GetFileNameWithoutExtension(actorpack);
@@ -110,7 +111,7 @@ namespace ArmorUpgradePhysicsPatcher
 
         private Task Generate()
         {
-            SarcFile sarc = new(Yaz0.DecompressFast(File.ReadAllBytes(TbSourceActor.Text)));
+            SarcFile sarc = new(Yaz0.Decompress(File.ReadAllBytes(TbSourceActor.Text)));
 
             var baseFiles = GetFiles(sarc.Files);
             var type = Path.GetFileNameWithoutExtension(TbSourceActor.Text).Split("_")[2];
@@ -118,7 +119,7 @@ namespace ArmorUpgradePhysicsPatcher
             foreach (var id in TbUpgradeIncrements.Text.Split(" ; ")) {
                 var actorpackFile = $"{bcml.GetUpdate()}\\Actor\\Pack\\Armor_{id}_{type}.sbactorpack";
                 if (File.Exists(actorpackFile)) {
-                    SarcFile actorpack = new(Yaz0.DecompressFast(actorpackFile));
+                    SarcFile actorpack = new(Yaz0.Decompress(actorpackFile));
                     var files = GetFiles(actorpack.Files);
 
                     foreach (var key in keys) {
@@ -135,7 +136,7 @@ namespace ArmorUpgradePhysicsPatcher
                         }
                     }
 
-                    File.WriteAllBytes($"{Path.GetDirectoryName(TbSourceActor.Text)}\\Armor_{id}_{type}.sbactorpack", Yaz0.CompressFast(actorpack.ToBinary()));
+                    File.WriteAllBytes($"{Path.GetDirectoryName(TbSourceActor.Text)}\\Armor_{id}_{type}.sbactorpack", Yaz0.Compress(actorpack.ToBinary()));
                 }
             }
 
