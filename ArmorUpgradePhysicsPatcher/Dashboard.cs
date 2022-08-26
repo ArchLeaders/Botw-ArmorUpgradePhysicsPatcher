@@ -134,9 +134,6 @@ namespace ArmorUpgradePhysicsPatcher
                                 aampnew.RootNode.ParamObjects[0].ParamEntries[17] = basePhysicsUser;
                                 actorpack.Files[files[key].Key] = aampnew.ToBinary();
                             }
-                            else if (key == "bphysics") {
-                                actorpack.Files[files[key].Key] = baseFiles[key].Value;
-                            }
                             else {
                                 if (files.ContainsKey(key)) {
                                     actorpack.Files.Remove(files[key].Key);
