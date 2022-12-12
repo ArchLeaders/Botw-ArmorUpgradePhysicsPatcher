@@ -79,7 +79,7 @@ namespace ArmorUpgradePhysicsPatcher
 
         private static Task<List<string>> Auto(string actorpack)
         {
-            string actorinfo = $"{actorpack}\\..\\..\\ActorInfo.product.sbyml -- nope";
+            string actorinfo = $"{actorpack}\\..\\..\\ActorInfo.product.sbyml";
 
             if (!File.Exists(actorinfo)) {
                 var bcml = new Bcml.Utils.Settings();
@@ -116,9 +116,15 @@ namespace ArmorUpgradePhysicsPatcher
 
             var baseFiles = GetFiles(sarc.Files);
             var type = Path.GetFileNameWithoutExtension(TbSourceActor.Text).Split("_")[2];
-            var bcml = new Bcml.Utils.Settings();
+            var modDir = Path.GetDirectoryName(TbSourceActor.Text);
             foreach (var id in TbUpgradeIncrements.Text.Split(" ; ")) {
-                var actorpackFile = $"{bcml.GetUpdate()}\\Actor\\Pack\\Armor_{id}_{type}.sbactorpack";
+                var actorpackFile = $"{modDir}\\Armor_{id}_{type}.sbactorpack";
+
+                if (!File.Exists(actorpackFile)) {
+                    var bcml = new Bcml.Utils.Settings();
+                    actorpackFile = $"{bcml.GetUpdate()}\\Actor\\Pack\\Armor_{id}_{type}.sbactorpack";
+                }
+
                 if (File.Exists(actorpackFile)) {
                     SarcFile actorpack = new(Yaz0.Decompress(actorpackFile));
                     var files = GetFiles(actorpack.Files);
